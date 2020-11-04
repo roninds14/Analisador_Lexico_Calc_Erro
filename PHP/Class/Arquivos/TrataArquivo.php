@@ -9,7 +9,7 @@ class TrataArquivo{
 		$this->file = fopen( $filename, "r"  );
 	}
 
-	public function texto(){
+	public function toArray(){
 		$linhas = array();
 
 		$linha = 0;
@@ -18,9 +18,7 @@ class TrataArquivo{
 			$char = "";	
 
 			$char = fgetc( $this->file );
-
-			if( !preg_match("/[0-9]|\n|\+|\-|\*|\/|\./", $char ) ) continue;
-
+			
 			if( $char === "\n" ){
 				$linha++;
 				continue;

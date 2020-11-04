@@ -5,6 +5,7 @@ namespace Analisador;
 class AnaLex{
 	protected $dados;
 	protected $tabela_lex;
+	public $chars;
 
 	public function getTabelaLex(){
 		return $this->tabela_lex;
@@ -14,41 +15,48 @@ class AnaLex{
 		$this->dados = $dados;
 	}
 
-	public function lexico(){
+	private function caracteres(){
 		$j = 0;
 
-		foreach( $this->dados as $p ){			
-			for( $i = 0; $i < strlen( $p ); $i++, $j++ ){
-				$lexena = "";
+		$elements = [];
 
-				switch( $p[$i] ){
-					case "+":
-						$this->tabela_lex[ $j ] = [ $p[$i], "OP_SOM" ];
-						break;
-					case "-":
-						$this->tabela_lex[ $j ] = [ $p[$i], "OP_SUB" ];
-						break;
-					case "*":
-						$this->tabela_lex[ $j ] = [ $p[$i], "OP_MUL" ];
-						break;
-					case "/":
-						$this->tabela_lex[ $j ] = [ $p[$i], "OP_DIV" ];
-						break;
-					default:
-						while( preg_match( "/[0-9]|\./", $p[$i] ) ){
-							$lexena .= $p[$i];
-							$i++;
+		foreach( $this->dados as $linha => $string ){
+			$ini = 1;
+			$fim = 1;
+			
+			$array = str_split($string);
 
-							if( $i >= strlen( $p ) ) break;
-						}
-						preg_match("/\./", $lexena ) ? $this->tabela_lex[ $j ] = [ $lexena, "NUM_REAL"]: $this->tabela_lex[ $j ] = [ $lexena, "NUM_INT"];
+			for( $i = 0; $i < count($array); $i++ ){								
+				if( $i < count($array) && !preg_match( "/\s/", $array[$i] ) ){
+					$element = [
+						"char" => $array[$i],
+						"linha" => $linha + 1,
+						"ini" => $ini,
+						"fim" => $fim
+					];
 
-						$i--;
-						break;
-				}				
+					array_push( $elements, $element );
+				}
+				
+				$fim++;
+
+				$ini = $fim;	
 			}
 		}
+
+		$this->chars = $elements;
 	}
 
+	public function lexenas(){
+		$chars = $this->chars;
 
+		$lenexas = []; 
+
+		for( $i = 0; $i < count($chars); $i++ ){
+			if( preg_match( "[0-9]|\.", $chars[$i] ) ) {
+				$prox = $chars[ $i+1 ];	
+			}
+			$prox = $chars[ $i+1 ];
+		}
+	}
 }
